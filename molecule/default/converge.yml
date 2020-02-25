@@ -5,10 +5,14 @@
 
   vars:
     php_enable_webserver: false
-    php_enable_php_fpm: true
     php_memory_limit: "192M"
+    php_enable_php_fpm: true
     php_enablerepo: "remi,remi-php70"
-    php_install_recommends: false
+    php_fpm_pools:
+      - php_fpm_pool: example
+        php_fpm_user: example
+        php_fpm_group: example
+        php_fpm_admin_value_sendmail_path: webmaster@example.com
 
   handlers:
     - name: update apt cache
@@ -20,6 +24,10 @@
       apt: update_cache=true cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
+
+    - name: Create user example.
+      user:
+        name: example
 
     # Ubuntu-specific tasks.
     - name: Ensure dirmngr is installed (gnupg dependency).
@@ -61,7 +69,7 @@
       when:
         - ansible_os_family == 'RedHat'
         - ansible_distribution != 'Fedora'
-    - role: geerlingguy.php
+    - role: apham0001.php
 
   post_tasks:
     - name: Confirm PHP configuration is correct.

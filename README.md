@@ -62,14 +62,23 @@ When using this role with PHP running as `php-fpm` instead of as a process insid
 
 If you're using Apache, you can easily get it configured to work with PHP-FPM using the [geerlingguy.apache-php-fpm](https://github.com/geerlingguy/ansible-role-apache-php-fpm) role.
 
-    php_fpm_listen: "127.0.0.1:9000"
-    php_fpm_listen_allowed_clients: "127.0.0.1"
-    php_fpm_pm_max_children: 50
-    php_fpm_pm_start_servers: 5
-    php_fpm_pm_min_spare_servers: 5
-    php_fpm_pm_max_spare_servers: 5
-
-Specific settings inside the default `www.conf` PHP-FPM pool. If you'd like to manage additional settings, you can do so either by replacing the file with your own template or using `lineinfile` like this role does inside `tasks/configure-fpm.yml`.
+    php_fpm_pools:
+      - php_fpm_pool: www
+        php_fpm_user: www
+        php_fpm_group: www
+        php_fpm_listen: /run/php/php7.3-fpm.sock
+        php_fpm_pm_max_children: 5
+        php_fpm_pm_start_servers: 2
+        php_fpm_pm_min_spare_servers: 1
+        php_fpm_pm_max_spare_servers: 3
+        php_fpm_pm_process_idle_timeout: 10s
+        php_fpm_pm_max_requests: 0
+        php_fpm_request_slowlog_timeout: 0
+        php_fpm_request_terminate_timeout: 0
+        php_fpm_rlimits_files: 1024
+        php_fpm_admin_value_sendmail_path: webmaster@example.com
+        extra_parameters: |
+          php_admin_value[memory_limit] = 128M
 
 ### php.ini settings
 

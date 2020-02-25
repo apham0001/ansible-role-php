@@ -18,9 +18,13 @@
       when: ansible_os_family == 'Debian'
       changed_when: false
 
+    - name: Create user example.
+      user:
+        name: example
+
   roles:
     - role: geerlingguy.git
-    - role: geerlingguy.php
+    - role: apham0001.php
 
   post_tasks:
     - name: Confirm PHP configuration is correct.
